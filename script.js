@@ -13,9 +13,11 @@ function GameBoard() {
     const fillCell = (token, row, column) => {
         if (board[column][row].getValue() !== 0) { //Checking if the cell is empty
             console.log('cell already taken');
-            return;
+            //Here i need to ask the same player again and not go through with the round
+            return true;
         } else {
             board[row][column].addToken(token);
+            return false;
         }
     };
 
@@ -58,6 +60,7 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
     ];
 
     let currentPlayer = players[0];
+    let playAgain = false;
 
     const getCurrentPlayer = () => currentPlayer;
 
@@ -73,12 +76,19 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
 
     const playRound = (row, column) => {
 
-        board.fillCell(currentPlayer.token, column, row);
-        
-        //Check if there is a winner, if not, continue with the following
+        playAgain = board.fillCell(currentPlayer.token, column, row);
 
-        addTurn();
-        printNewRound();
+        //Check if the player inputed a valid cell
+        if (playAgain) {
+            printNewRound();
+        } 
+        //TODO : check in between these two if the game is won or tied
+        else {
+            addTurn();
+            printNewRound();
+        }
+
+        
     };
 
     const checkGameOver = () => {
