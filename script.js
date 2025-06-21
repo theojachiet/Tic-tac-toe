@@ -147,8 +147,8 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
     };
 }
 
-function ScreenController() {
-    const game = GameFlow();
+function ScreenController(name1, name2) {
+    const game = GameFlow(name1, name2);
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
 
@@ -204,4 +204,20 @@ function ScreenController() {
     updateScreen();
 }
 
-ScreenController();
+function DialogStarter() {
+    const dialog = document.querySelector('dialog');
+    const confirmButton = document.querySelector('.submit');
+
+    dialog.showModal();
+
+    confirmButton.addEventListener('click', (event) => {
+        const name1 = document.querySelector('#player1-name').value;
+        const name2 = document.querySelector('#player2-name').value;
+
+        ScreenController(name1, name2);
+        event.preventDefault();
+        dialog.close();
+    });
+}
+
+DialogStarter();
