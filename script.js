@@ -83,6 +83,7 @@ function Cell() {
 function GameFlow(name1 = 'player1', name2 = 'player2') {
 
     const board = GameBoard();
+    let situation = 0;
 
     const players = [
         {
@@ -99,6 +100,7 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
     let playAgain = false;
 
     const getCurrentPlayer = () => currentPlayer;
+    const getSituation = () => situation;
 
     const addTurn = () => {
         if (currentPlayer === players[0]) currentPlayer = players[1];
@@ -119,8 +121,10 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
             printNewRound();
         } else if (board.checkWin()) {
             board.displayBoard();
+            situation = 1;
             console.log(`Game over ! ${currentPlayer.name} wins !`);
         } else if (board.checkTie()) {
+            situation = 2;
             board.displayBoard();
             console.log('No space left on the board. It is a tie !')
         } else {
@@ -138,7 +142,8 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
     return {
         playRound,
         getCurrentPlayer,
-        getBoard: board.getBoard
+        getBoard: board.getBoard,
+        getSituation
     };
 }
 
@@ -152,8 +157,15 @@ function ScreenController() {
 
         const board = game.getBoard();
         const currentPlayer = game.getCurrentPlayer().name;
+        const situation = game.getSituation();
 
-        playerTurnDiv.textContent = `${currentPlayer}'s Turn !`;
+        if (situation === 0) {
+            playerTurnDiv.textContent = `${currentPlayer}'s Turn !`;
+        } else if (situation === 1) {
+            playerTurnDiv.textContent = `Game over ! ${currentPlayer} wins !`;
+        } else if (situation === 2) {
+            playerTurnDiv.textContent = 'No space left on the board. It is a tie !';
+        }
 
         board.forEach((row, indexRow) => {
             row.forEach((cell, indexCol) => {
@@ -163,7 +175,15 @@ function ScreenController() {
                 cellButton.dataset.column = indexCol;
                 cellButton.dataset.row = indexRow;
 
-                cellButton.textContent = cell.getValue();
+                if (cell.getValue() === 2) {
+                    cellButton.textContent = 'O';
+                    cellButton.style.color = 'rgb(100, 180, 100)';
+                } else if (cell.getValue() === 1) {
+                    cellButton.textContent = 'X';
+                    cellButton.style.color = 'rgb(220, 100, 100)';
+                } else {
+                    cellButton.textContent = '';
+                }
                 boardDiv.appendChild(cellButton);
             })
         })

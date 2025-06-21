@@ -101,6 +101,9 @@ body {
 .cell {
     background-color: #555;
     border-radius: 10px;
+    color: #ccc;
+    font-size: 4rem;
+    font-weight: bold;
 }
 
 .turn {
