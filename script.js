@@ -27,33 +27,28 @@ function GameBoard() {
         console.log(boardValues);
     };
 
-    const checkWin = () => {:
+    const checkWin = () => {
+        const isWinning = (a, b, c) => {
+            return (a === b && a === c && a !== 0);
+        }
         //The values of one row are all the same
         for (let i = 0; i < boardSize; i++) {
-            if (board[i][0].getValue() === board[i][1].getValue() && board[i][0].getValue() === board[i][2].getValue()) {
-                if (board[i][0].getValue() !== 0) {
-                    return true;
-                }
+            if (isWinning(board[i][0].getValue(), board[i][1].getValue(), board[i][2].getValue())) {
+                return true;
             }
         }
         //The values of one column are all the same
         for (let i = 0; i < boardSize; i++) {
-            if (board[0][i].getValue() === board[1][i].getValue() && board[0][i].getValue() === board[2][i].getValue()) {
-                if (board[0][i].getValue() !== 0) {
-                    return true;
-                }
+            if (isWinning(board[0][i].getValue(), board[1][i].getValue(), board[2][i].getValue())) {
+                return true;
             }
         }
         //The values of one diagonal are all the same
-        if (board[0][0].getValue() === board[1][1].getValue() && board[0][0].getValue() === board[2][2].getValue()) {
-            if (board[0][0].getValue() !== 0) {
-                return true;
-            }
+        if (isWinning(board[0][0].getValue(), board[1][1].getValue(), board[2][2].getValue())) {
+            return true
         }
-        if (board[0][2].getValue() === board[1][1].getValue() && board[0][2].getValue() === board[2][0].getValue()) {
-            if (board[0][2].getValue() !== 0) {
-                return true;
-            }
+        if (isWinning(board[0][2].getValue(), board[1][1].getValue(), board[2][0].getValue())) {
+            return true
         }
         return false;
     }
