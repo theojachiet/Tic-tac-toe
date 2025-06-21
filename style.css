@@ -128,8 +128,6 @@ button {
 
 /* RESET BUTTON  */
 
-.reset {}
-
 .reset button {
     text-align: center;
     appearance: none;

@@ -93,7 +93,7 @@ function Cell() {
     return { getValue, addToken, setValue };
 }
 
-function GameFlow(name1 = 'player1', name2 = 'player2') {
+function GameFlow(name1 = '2', name2 = '1') {
 
     const board = GameBoard();
     let situation = 0;
@@ -166,12 +166,13 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
         getSituation,
         setSituation,
         setCurrentPlayer,
-        players
+        player1: players[0].name,
+        player2: players[1].name
     };
 }
 
-function ScreenController(name1, name2) {
-    const game = GameFlow(name1, name2);
+function ScreenController() {
+    const game = GameFlow(PlayerState.getplayer1Name(), PlayerState.getplayer2Name());
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
     const reset = document.querySelector('.reset');
@@ -227,8 +228,6 @@ function ScreenController(name1, name2) {
 
     //Initial render
     updateScreen();
-
-    return {updateScreen}
 }
 
 function DialogStarter() {
@@ -241,24 +240,41 @@ function DialogStarter() {
         const name1 = document.querySelector('#player1-name').value;
         const name2 = document.querySelector('#player2-name').value;
 
-        ScreenController(name1, name2);
+        PlayerState.setNames(name1, name2);
+        ScreenController();
         event.preventDefault();
         dialog.close();
     });
 }
 
 function resetGame() {
-    const game = GameFlow();
     const board = GameBoard();
-    const screen = ScreenController();
-    game.setSituation(0);
-    game.setCurrentPlayer(game.players[0]);
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             board.setCell(i, j, 0);
         }
     }
-    screen.updateScreen();
+    ScreenController();
 }
+
+const PlayerState = (function () {
+    let player1 = 'Player 1';
+    let player2 = 'Player 2';
+
+    const setNames = (name1, name2) => {
+        player1 = name1;
+        player2 = name2;
+    };
+
+    const getplayer1Name = () => player1;
+    const getplayer2Name = () => player2;
+
+    return {
+        getplayer1Name,
+        getplayer2Name,
+        setNames
+    }
+
+})();
 
 DialogStarter();
