@@ -170,8 +170,15 @@ function ScreenController() {
     };
 
     function eventHandler(e) {
+        const selectedRow = e.target.dataset.row;
+        const selectedCol = e.target.dataset.column;
 
+        if (!selectedCol || !selectedRow) return;
+
+        game.playRound(selectedRow, selectedCol);
+        updateScreen();
     }
+    boardDiv.addEventListener('click', eventHandler);
 
     //Initial render
     updateScreen();
