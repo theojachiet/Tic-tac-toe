@@ -21,6 +21,9 @@ function GameBoard() {
     };
 
     const getBoard = () => board;
+    const setCell = (x, y, token) => {
+        board[x][y].addToken(token);
+    };
 
     const displayBoard = () => {
         const boardValues = board.map((row) => row.map((cell) => cell.getValue()));
@@ -64,7 +67,14 @@ function GameBoard() {
         return true;
     }
 
-    return { getBoard, fillCell, displayBoard, checkWin, checkTie };
+    return {
+        getBoard,
+        fillCell,
+        displayBoard,
+        checkWin,
+        checkTie,
+        setCell
+    };
 };
 
 function Cell() {
@@ -72,12 +82,15 @@ function Cell() {
     let value = 0;
 
     const getValue = () => value;
+    const setValue = (newValue) => {
+        value = newValue;
+    };
 
     const addToken = (playerToken) => {
         value = playerToken;
     };
 
-    return { getValue, addToken };
+    return { getValue, addToken, setValue };
 }
 
 function GameFlow(name1 = 'player1', name2 = 'player2') {
@@ -101,6 +114,13 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
 
     const getCurrentPlayer = () => currentPlayer;
     const getSituation = () => situation;
+
+    const setSituation = (state) => {
+        situation = state;
+    };
+    const setCurrentPlayer = (player) => {
+        currentPlayer = player;
+    }
 
     const addTurn = () => {
         if (currentPlayer === players[0]) currentPlayer = players[1];
@@ -143,7 +163,10 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
         playRound,
         getCurrentPlayer,
         getBoard: board.getBoard,
-        getSituation
+        getSituation,
+        setSituation,
+        setCurrentPlayer,
+        players
     };
 }
 
@@ -151,6 +174,7 @@ function ScreenController(name1, name2) {
     const game = GameFlow(name1, name2);
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
+    const reset = document.querySelector('.reset');
 
     const updateScreen = () => {
         boardDiv.textContent = '';
@@ -199,9 +223,12 @@ function ScreenController(name1, name2) {
         updateScreen();
     }
     boardDiv.addEventListener('click', eventHandler);
+    reset.addEventListener('click', resetGame);
 
     //Initial render
     updateScreen();
+
+    return {updateScreen}
 }
 
 function DialogStarter() {
@@ -218,6 +245,20 @@ function DialogStarter() {
         event.preventDefault();
         dialog.close();
     });
+}
+
+function resetGame() {
+    const game = GameFlow();
+    const board = GameBoard();
+    const screen = ScreenController();
+    game.setSituation(0);
+    game.setCurrentPlayer(game.players[0]);
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            board.setCell(i, j, 0);
+        }
+    }
+    screen.updateScreen();
 }
 
 DialogStarter();
