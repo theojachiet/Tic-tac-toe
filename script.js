@@ -135,8 +135,46 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
     //Print the initial round
     printNewRound();
 
-    return { playRound, getCurrentPlayer };
-};
+    return {
+        playRound,
+        getCurrentPlayer,
+        getBoard: board.getBoard
+    };
+}
 
-const game = GameFlow();
-const board = GameBoard();
+function ScreenController() {
+    const game = GameFlow();
+    const playerTurnDiv = document.querySelector('.turn');
+    const boardDiv = document.querySelector('.board');
+
+    const updateScreen = () => {
+        boardDiv.textContent = '';
+
+        const board = game.getBoard();
+        const currentPlayer = game.getCurrentPlayer().name;
+
+        playerTurnDiv.textContent = `${currentPlayer}'s Turn !`;
+
+        board.forEach((row, indexRow) => {
+            row.forEach((cell, indexCol) => {
+                const cellButton = document.createElement('button');
+                cellButton.classList.add('cell');
+
+                cellButton.dataset.column = indexCol;
+                cellButton.dataset.row = indexRow;
+
+                cellButton.textContent = cell.getValue();
+                boardDiv.appendChild(cellButton);
+            })
+        })
+    };
+
+    function eventHandler(e) {
+
+    }
+
+    //Initial render
+    updateScreen();
+}
+
+ScreenController();
