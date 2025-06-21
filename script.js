@@ -6,15 +6,14 @@ function GameBoard() {
     for (let i = 0; i < boardSize; i++) {
         board[i] = []; //Making rows
         for (let j = 0; j < boardSize; j++) {
-            board[i].push(Cell()); // TODO I have to make a cell object now
+            board[i].push(Cell());
         }
     }
 
     const fillCell = (token, row, column) => {
-        if (board[column][row].getValue() !== 0) { //Checking if the cell is empty
+        if (board[row][column].getValue() !== 0) { //Checking if the cell is empty
             console.log('cell already taken');
-            //Here i need to ask the same player again and not go through with the round
-            return true;
+            return true; // We tell the gameflow that this is not a valid input
         } else {
             board[row][column].addToken(token);
             return false;
@@ -28,7 +27,38 @@ function GameBoard() {
         console.log(boardValues);
     };
 
-    return { getBoard, fillCell, displayBoard };
+    const checkWin = () => {:
+        //The values of one row are all the same
+        for (let i = 0; i < boardSize; i++) {
+            if (board[i][0].getValue() === board[i][1].getValue() && board[i][0].getValue() === board[i][2].getValue()) {
+                if (board[i][0].getValue() !== 0) {
+                    return true;
+                }
+            }
+        }
+        //The values of one column are all the same
+        for (let i = 0; i < boardSize; i++) {
+            if (board[0][i].getValue() === board[1][i].getValue() && board[0][i].getValue() === board[2][i].getValue()) {
+                if (board[0][i].getValue() !== 0) {
+                    return true;
+                }
+            }
+        }
+        //The values of one diagonal are all the same
+        if (board[0][0].getValue() === board[1][1].getValue() && board[0][0].getValue() === board[2][2].getValue()) {
+            if (board[0][0].getValue() !== 0) {
+                return true;
+            }
+        }
+        if (board[0][2].getValue() === board[1][1].getValue() && board[0][2].getValue() === board[2][0].getValue()) {
+            if (board[0][2].getValue() !== 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    return { getBoard, fillCell, displayBoard, checkWin };
 };
 
 function Cell() {
@@ -76,29 +106,27 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
 
     const playRound = (row, column) => {
 
-        playAgain = board.fillCell(currentPlayer.token, column, row);
+        playAgain = board.fillCell(currentPlayer.token, row, column);
 
         //Check if the player inputed a valid cell
         if (playAgain) {
             printNewRound();
-        } 
-        //TODO : check in between these two if the game is won or tied
-        else {
+        } else if (board.checkWin()) {
+            board.displayBoard();
+            console.log(`Game over ! ${currentPlayer.name} wins !`);
+        } else {
             addTurn();
             printNewRound();
         }
 
-        
+
     };
 
-    const checkGameOver = () => {
-        // Check for a winner or if the gameboard is full.
-        // Implement after the rest of the game is done
-    };
-
+    //Print the initial round
     printNewRound();
 
-    return {playRound, getCurrentPlayer};
+    return { playRound, getCurrentPlayer };
 };
 
 const game = GameFlow();
+const board = GameBoard();
