@@ -21,9 +21,6 @@ function GameBoard() {
     };
 
     const getBoard = () => board;
-    const setCell = (x, y, token) => {
-        board[x][y].addToken(token);
-    };
 
     const displayBoard = () => {
         const boardValues = board.map((row) => row.map((cell) => cell.getValue()));
@@ -67,13 +64,21 @@ function GameBoard() {
         return true;
     }
 
+    const resetBoard = () => {
+            for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+            board[i][j].addToken(0);
+        }
+    }
+    };
+
     return {
         getBoard,
         fillCell,
         displayBoard,
         checkWin,
         checkTie,
-        setCell
+        resetBoard
     };
 };
 
@@ -82,15 +87,12 @@ function Cell() {
     let value = 0;
 
     const getValue = () => value;
-    const setValue = (newValue) => {
-        value = newValue;
-    };
 
     const addToken = (playerToken) => {
         value = playerToken;
     };
 
-    return { getValue, addToken, setValue };
+    return { getValue, addToken };
 }
 
 function GameFlow(name1 = '2', name2 = '1') {
@@ -114,13 +116,6 @@ function GameFlow(name1 = '2', name2 = '1') {
 
     const getCurrentPlayer = () => currentPlayer;
     const getSituation = () => situation;
-
-    const setSituation = (state) => {
-        situation = state;
-    };
-    const setCurrentPlayer = (player) => {
-        currentPlayer = player;
-    }
 
     const addTurn = () => {
         if (currentPlayer === players[0]) currentPlayer = players[1];
@@ -152,8 +147,12 @@ function GameFlow(name1 = '2', name2 = '1') {
             addTurn();
             printNewRound();
         }
+    };
 
-
+    const resetGame = () => {
+        board.resetBoard();
+        situation = 0;
+        currentPlayer = players[0];
     };
 
     //Print the initial round
@@ -164,10 +163,7 @@ function GameFlow(name1 = '2', name2 = '1') {
         getCurrentPlayer,
         getBoard: board.getBoard,
         getSituation,
-        setSituation,
-        setCurrentPlayer,
-        player1: players[0].name,
-        player2: players[1].name
+        resetGame
     };
 }
 
@@ -224,7 +220,10 @@ function ScreenController() {
         updateScreen();
     }
     boardDiv.addEventListener('click', eventHandler);
-    reset.addEventListener('click', resetGame);
+    reset.addEventListener('click', () => {
+        game.resetGame();
+        updateScreen();
+    });
 
     //Initial render
     updateScreen();
@@ -245,16 +244,6 @@ function DialogStarter() {
         event.preventDefault();
         dialog.close();
     });
-}
-
-function resetGame() {
-    const board = GameBoard();
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            board.setCell(i, j, 0);
-        }
-    }
-    ScreenController();
 }
 
 const PlayerState = (function () {
