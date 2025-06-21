@@ -124,6 +124,7 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
             board.displayBoard();
             console.log('No space left on the board. It is a tie !')
         } else {
+            //Default
             addTurn();
             printNewRound();
         }
