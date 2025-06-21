@@ -53,7 +53,18 @@ function GameBoard() {
         return false;
     }
 
-    return { getBoard, fillCell, displayBoard, checkWin };
+    const checkTie = () => {
+        for (let i = 0; i < boardSize; i++) {
+            for (let j = 0; j < boardSize; j++) {
+                if (board[i][j].getValue() === 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    return { getBoard, fillCell, displayBoard, checkWin, checkTie };
 };
 
 function Cell() {
@@ -109,6 +120,9 @@ function GameFlow(name1 = 'player1', name2 = 'player2') {
         } else if (board.checkWin()) {
             board.displayBoard();
             console.log(`Game over ! ${currentPlayer.name} wins !`);
+        } else if (board.checkTie()) {
+            board.displayBoard();
+            console.log('No space left on the board. It is a tie !')
         } else {
             addTurn();
             printNewRound();
